@@ -9,7 +9,7 @@ def test_admin_panel():
     """Does the admin panel return a 200 by default"""
     app = create_ctfd()
     with app.app_context():
-        client = login_as_user(app, name="admin", password="password")
+        client = login_as   _user(app, name="admin", password="password")
         r = client.get('/admin')
         assert r.status_code == 302
         r = client.get('/admin/graphs')
