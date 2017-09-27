@@ -135,6 +135,8 @@ input[type="checkbox"] { margin: 0px !important; position: relative; top: 5px; }
 			<tr>
 				<td width="10px" class="text-center"><b>ID</b>
 				</td>
+                <td class="text-center"><b>Username</b>
+				</td>
 				<td class="text-center"><b>Team</b>
 				</td>
 				<td class="text-center"><b>Email</b>
@@ -157,6 +159,8 @@ input[type="checkbox"] { margin: 0px !important; position: relative; top: 5px; }
 			{% for team in teams %}
 			<tr name="{{ team.id }}">
 				<td class="team-id" value="{{ team.id }}">{{ team.id }}</td>
+                <td class="team-username" value="{{ team.user_name }}"><a href="{{ request.script_root }}/admin/team/{{ team.id }}">{{ team.user_name | truncate(32) }}</a>
+				</td>
 				<td class="team-name" value="{{ team.name }}"><a href="{{ request.script_root }}/admin/team/{{ team.id }}">{{ team.name | truncate(32) }}</a>
 				</td>
 				<td class="team-email">{{ team.email | truncate(32) }}</td>

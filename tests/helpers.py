@@ -44,6 +44,7 @@ def register_user(app, name="user", email="user@ctfd.io", password="password"):
             with client.session_transaction() as sess:
                 data = {
                     "name": name,
+                    "user_name": name,
                     "email": email,
                     "password": password,
                     "nonce": sess.get('nonce')
@@ -104,7 +105,7 @@ def gen_flag(db, chal, flag='flag', key_type=0):
 
 
 def gen_team(db, name='name', email='user@ctfd.io', password='password'):
-    team = Teams(name, email, password)
+    team = Teams(name, name, email, password)
     db.session.add(team)
     db.session.commit()
     return team

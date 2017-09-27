@@ -32,7 +32,7 @@ def setup():
             name = request.form['name']
             email = request.form['email']
             password = request.form['password']
-            admin = Teams(name, email, password)
+            admin = Teams(name, name, email, password)
             admin.admin = True
             admin.banned = True
 
@@ -187,6 +187,7 @@ def profile():
             country = request.form.get('country')
 
             user = Teams.query.filter_by(id=session['id']).first()
+            user_name = user.user_name
 
             if not utils.get_config('prevent_name_change'):
                 names = Teams.query.filter_by(name=name).first()
@@ -210,7 +211,7 @@ def profile():
                 errors.append("That doesn't look like a valid URL")
 
             if len(errors) > 0:
-                return render_template('profile.html', name=name, email=email, website=website,
+                return render_template('profile.html', user_name=user_name, name=name, email=email, website=website,
                                        affiliation=affiliation, country=country, errors=errors)
             else:
                 team = Teams.query.filter_by(id=session['id']).first()
@@ -220,7 +221,7 @@ def profile():
                     team.email = email.lower()
                     if utils.get_config('verify_emails'):
                         team.verified = False
-                session['username'] = team.name
+                session['teamname'] = team.name
 
                 if 'password' in request.form.keys() and not len(request.form['password']) == 0:
                     team.password = bcrypt_sha256.encrypt(request.form.get('password'))
@@ -232,6 +233,7 @@ def profile():
                 return redirect(url_for('views.profile'))
         else:
             user = Teams.query.filter_by(id=session['id']).first()
+            user_name = user.user_name
             name = user.name
             email = user.email
             website = user.website
@@ -239,7 +241,7 @@ def profile():
             country = user.country
             prevent_name_change = utils.get_config('prevent_name_change')
             confirm_email = utils.get_config('verify_emails') and not user.verified
-            return render_template('profile.html', name=name, email=email, website=website, affiliation=affiliation,
+            return render_template('profile.html', user_name=user_name, name=name, email=email, website=website, affiliation=affiliation,
                                    country=country, prevent_name_change=prevent_name_change, confirm_email=confirm_email)
     else:
         return redirect(url_for('auth.login'))

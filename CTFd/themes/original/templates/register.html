@@ -20,11 +20,21 @@
 				</div>
 			{% endfor %}
 			<form method="post" accept-charset="utf-8" autocomplete="off" role="form" class="form-horizontal">
+                <div class="row">
+					<div class="col-md-12">
+						<span class="input">
+						<input class="input-field" type="text" name="user_name" id="input-user-name" {% if user_name %}value="{{ user_name }}"{% endif %} />
+						<label class="input-label" for="input-user-name">
+							<span class="label-content" data-content="User Name">User Name</span>
+						</label>
+					</span>
+					</div>
+				</div>
 				<div class="row">
 					<div class="col-md-12">
 						<span class="input">
-						<input class="input-field" type="text" name="name" id="input-10" {% if name %}value="{{ name }}"{% endif %} />
-						<label class="input-label" for="input-10">
+						<input class="input-field" type="text" name="name" id="input-name" {% if name %}value="{{ name }}"{% endif %} />
+						<label class="input-label" for="input-name">
 							<span class="label-content" data-content="Team Name">Team Name</span>
 						</label>
 					</span>
@@ -33,8 +43,8 @@
 				<div class="row">
 					<div class="col-md-12">
 						<span class="input">
-						<input class="input-field" type="text" name="email" id="input-10" {% if email %}value="{{ email }}"{% endif %} />
-						<label class="input-label" for="input-10">
+						<input class="input-field" type="text" name="email" id="input-email" {% if email %}value="{{ email }}"{% endif %} />
+						<label class="input-label" for="input-email">
 							<span class="label-content" data-content="Email">Email</span>
 						</label>
 					</span>
@@ -43,8 +53,8 @@
 				<div class="row">
 					<div class="col-md-12">
 						<span class="input">
-						<input class="input-field" type="password" name="password" id="input-10" {% if password %}value="{{ password }}"{% endif %}/>
-						<label class="input-label" for="input-10">
+						<input class="input-field" type="password" name="password" id="input-password" {% if password %}value="{{ password }}"{% endif %}/>
+						<label class="input-label" for="input-password">
 							<span class="label-content" data-content="Password">Password</span>
 						</label>
 					</span>

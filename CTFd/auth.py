@@ -82,12 +82,12 @@ def reset_password(data=None):
     if data is not None and request.method == "POST":
         try:
             s = TimedSerializer(app.config['SECRET_KEY'])
-            name = s.loads(utils.base64decode(data, urldecode=True), max_age=1800)
+            user_name = s.loads(utils.base64decode(data, urldecode=True), max_age=1800)
         except BadTimeSignature:
             return render_template('reset_password.html', errors=['Your link has expired'])
         except:
             return render_template('reset_password.html', errors=['Your link appears broken, please try again.'])
-        team = Teams.query.filter_by(name=name).first_or_404()
+        team = Teams.query.filter_by(user_name=user_name).first_or_404()
         team.password = bcrypt_sha256.encrypt(request.form['password'].strip())
         db.session.commit()
         logger.warn("[{date}] {ip} -  successful password reset for {username}".format(
@@ -104,7 +104,7 @@ def reset_password(data=None):
         if not team:
             return render_template('reset_password.html', errors=['If that account exists you will receive an email, please check your inbox'])
         s = TimedSerializer(app.config['SECRET_KEY'])
-        token = s.dumps(team.name)
+        token = s.dumps(team.user_name)
         text = """
 Did you initiate a password reset?
 
@@ -125,11 +125,13 @@ def register():
         return redirect(url_for('auth.login'))
     if request.method == 'POST':
         errors = []
+        user_name = request.form['user_name']
         name = request.form['name']
         email = request.form['email']
         password = request.form['password']
 
         name_len = len(name) == 0
+        user_names = Teams.query.add_columns('user_name', 'id').filter_by(user_name=user_name).first()
         names = Teams.query.add_columns('name', 'id').filter_by(name=name).first()
         emails = Teams.query.add_columns('email', 'id').filter_by(email=email).first()
         pass_short = len(password) == 0
@@ -138,6 +140,8 @@ def register():
 
         if not valid_email:
             errors.append("That email doesn't look right")
+        if user_names:
+            errors.append('That team name is already taken')
         if names:
             errors.append('That team name is already taken')
         if emails:
@@ -153,12 +157,13 @@ def register():
             return render_template('register.html', errors=errors, name=request.form['name'], email=request.form['email'], password=request.form['password'])
         else:
             with app.app_context():
-                team = Teams(name, email.lower(), password)
+                team = Teams(user_name, name, email.lower(), password)
                 db.session.add(team)
                 db.session.commit()
                 db.session.flush()
 
-                session['username'] = team.name
+                session['username'] = team.user_name
+                session['team_name'] = team.name
                 session['id'] = team.id
                 session['admin'] = team.admin
                 session['nonce'] = utils.sha512(os.urandom(10))
@@ -168,7 +173,7 @@ def register():
                     logger.warn("[{date}] {ip} - {username} registered (UNCONFIRMED) with {email}".format(
                         date=time.strftime("%m/%d/%Y %X"),
                         ip=utils.get_ip(),
-                        username=request.form['name'].encode('utf-8'),
+                        username=request.form['user_name'].encode('utf-8'),
                         email=request.form['email'].encode('utf-8')
                     ))
                     utils.verify_email(team.email)
@@ -195,8 +200,8 @@ def login():
     logger = logging.getLogger('logins')
     if request.method == 'POST':
         errors = []
-        name = request.form['name']
-        team = Teams.query.filter_by(name=name).first()
+        user_name = request.form['user_name']
+        team = Teams.query.filter_by(user_name=user_name).first()
         if team:
             if team and bcrypt_sha256.verify(request.form['password'], team.password):
                 try:
