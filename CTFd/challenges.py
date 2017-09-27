@@ -317,8 +317,14 @@ def chal(chalid):
             status, message = chal_class.solve(chal, provided_key)
             if status:  # The challenge plugin says the input is right
                 if utils.ctftime() or utils.is_admin():
+                    solve_cnt = Solves.query.filter_by(chalid=chalid).count()
                     solve = Solves(teamid=session['id'], chalid=chalid, ip=utils.get_ip(), flag=provided_key)
                     db.session.add(solve)
+                    if solve_cnt < 3:
+                        value = chal.value <= 100 and 15 or 30
+                        value -= value / 3 * solve_cnt
+                        award = Awards(teamid=session['id'], name=text_type("The {0}th solver's award"), value=value)
+                        db.session.add(award)
                     db.session.commit()
                     db.session.close()
                 logger.info("[{0}] {1} submitted {2} with kpm {3} [CORRECT]".format(*data))
