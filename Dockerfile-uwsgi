@@ -1,0 +1,25 @@
+From phusion/baseimage:0.9.22
+
+# Chinese User Only
+RUN sed -i s/archive.ubuntu.com/mirrors.tuna.tsinghua.edu.cn/g /etc/apt/sources.list 
+
+RUN apt-get update && apt-get install -y python-pip uwsgi-plugin-python nginx mariadb-client \
+    && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN echo "daemon off;" >> /etc/nginx/nginx.conf && mkdir /app
+
+COPY . /app/ctfd
+RUN chown -R www-data:www-data /app/ctfd
+
+RUN mkdir /etc/service/uwsgi-ctfd
+COPY docker-uwsgi/uwsgi.sh /etc/service/uwsgi-ctfd/run
+RUN chmod +x /etc/service/uwsgi-ctfd/run
+
+RUN mkdir /etc/service/nginx
+COPY docker-uwsgi/nginx.sh /etc/service/nginx/run
+RUN chmod +x /etc/service/nginx/run
+
+RUN cd /app/ctfd && pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt && rm -fr /root/.cache/pip
+
+COPY docker-uwsgi/nginx-ctfd.conf /etc/nginx/sites-enabled/ctfd
+

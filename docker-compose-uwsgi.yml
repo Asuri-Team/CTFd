@@ -1,0 +1,25 @@
+version: '2'
+
+services:
+  ctfd-uwsgi:
+    build: .
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=mysql+pymysql://root:ctfd@db/ctfd
+    volumes:
+      - .data/CTFd/logs:/app/ctfd/CTFd/logs
+      - .data/CTFd/uploads:/app/ctfd/CTFd/uploads
+    depends_on:
+      - db
+
+  db:
+    image: mariadb:10.2
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=AJSOIDFHJAOSIERUYDASE
+      - MYSQL_USER=ctfd
+      - MYSQL_PASSWORD=ctfd
+    volumes:
+      - .data/mysql:/var/lib/mysql
