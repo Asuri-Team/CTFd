@@ -18,7 +18,7 @@ depends_on = None
 
 
 def upgrade():
-    op.add_column('teams', sa.Column('user_name', sa.VARCHAR(), nullable=False, unique=True))
+    op.add_column('teams', sa.Column('user_name', sa.VARCHAR(128), nullable=False, unique=True))
     conn = op.get_bind()
     conn.execute(text("UPDATE teams SET user_name = name"))
 
