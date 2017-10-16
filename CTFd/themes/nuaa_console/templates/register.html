@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+{% endblock %}
+
+{% block content %}
+<div class="container main-container">
+	<div class="row">
+		<div id="login-container" class="col-md-6 col-md-offset-3">
+			{% for error in errors %}
+				<div class="alert alert-danger alert-dismissable" role="alert">
+				  <span class="sr-only">Error:</span>
+				  {{ error }}
+				  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+				</div>
+			{% endfor %}
+			<form method="post" accept-charset="utf-8" autocomplete="off" role="form" class="form-horizontal">
+                <div class="row">
+					<div class="col-md-12">
+						<span class="input">
+						<input class="input-field" type="text" name="user_name" id="input-user-name" {% if user_name %}value="{{ user_name }}"{% endif %} />
+						<label class="input-label" for="input-user-name">
+							<span class="label-content" data-content="User Name">用户名</span>
+						</label>
+					</span>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<span class="input">
+						<input class="input-field" type="text" name="name" id="input-name" {% if name %}value="{{ name }}"{% endif %} />
+						<label class="input-label" for="input-name">
+							<span class="label-content" data-content="Team Name">队伍名称</span>
+						</label>
+					</span>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<span class="input">
+						<input class="input-field" type="text" name="email" id="input-email" {% if email %}value="{{ email }}"{% endif %} />
+						<label class="input-label" for="input-email">
+							<span class="label-content" data-content="Email">电子邮箱</span>
+						</label>
+					</span>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<span class="input">
+						<input class="input-field" type="password" name="password" id="input-password" {% if password %}value="{{ password }}"{% endif %}/>
+						<label class="input-label" for="input-password">
+							<span class="label-content" data-content="Password">密码</span>
+						</label>
+					</span>
+					</div>
+				</div>
+				<div class="done-row row">
+					<div class="col-md-6 col-md-offset-6" style="margin-top:10px">
+						<button type="submit" id="submit" tabindex="5" class="btn btn-md btn-theme btn-outlined pull-right">提交</button>
+					</div>
+				</div>
+				<input type="hidden" name="nonce" value="{{ nonce }}">
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ request.script_root }}/themes/{{ ctf_theme() }}/static/js/style.js"></script>
+<script>
+	if (window.location.hash == "#frame"){
+		$('.top-bar').hide()
+	}
+</script>
+{% endblock %}

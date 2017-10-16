@@ -1,0 +1,122 @@
+<!--
+                    _ooOoo_
+                   o8888888o
+                   88" . "88
+                   (| -_- |)
+                   O\  =  /O
+                ____/`---'\____
+              .'  \\|     |//  `.
+             /  \\|||  :  |||//  \
+            /  _||||| -:- |||||-  \
+            |   | \\\  -  /// |   |
+            | \_|  ''\---/''  |   |
+            \  .-\__  `-`  ___/-. /
+          ___`. .'  /--.--\  `. . __
+       ."" '<  `.___\_<|>_/___.'  >'"".
+      | | :  `- \`.;`\ _ /`;.`/ - ` : | |
+      \  \ `-.   \_ __\ /__ _/   .-` /  /
+ ======`-.____`-.___\_____/___.-`____.-'======
+                    `=---='
+ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            佛祖保佑       永无BUG
+-->
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{{ ctf_name() }}</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="shortcut icon" href="{{ request.script_root }}/themes/{{ ctf_theme() }}/static/img/favicon.ico" type="image/x-icon">
+	<link rel="icon" href="{{ request.script_root }}/themes/{{ ctf_theme() }}/static/img/favicon.ico" type="image/x-icon">
+	<link rel="stylesheet" href="{{ request.script_root }}/themes/{{ ctf_theme() }}/static/css/vendor/bootstrap.min.css">
+	<link rel="stylesheet" href="{{ request.script_root }}/themes/{{ ctf_theme() }}/static/css/vendor/font-awesome/css/font-awesome.min.css" />
+	<link href='{{ request.script_root }}/themes/{{ ctf_theme() }}/static/css/vendor/lato.css' rel='stylesheet' type='text/css'>
+	<link href='{{ request.script_root }}/themes/{{ ctf_theme() }}/static/css/vendor/raleway.css' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="{{ request.script_root }}/themes/{{ ctf_theme() }}/static/css/style.css">
+	<link rel="stylesheet" type="text/css" href="{{ request.script_root }}/static/user.css">
+	{% block stylesheets %}{% endblock %}
+	{% for stylesheet in get_registered_stylesheets() %}
+	{% if stylesheet.startswith('http') %}
+	<link rel="stylesheet" type="text/css" href="{{ stylesheet }}">
+	{% elif request.script_root %}
+	<link rel="stylesheet" type="text/css" href="{{ request.script_root }}/{{ stylesheet }}">
+	{% else %}
+	<link rel="stylesheet" type="text/css" href="{{ stylesheet }}">
+	{% endif %}
+	{% endfor %}
+	<script src="{{ request.script_root }}/themes/{{ ctf_theme() }}/static/js/vendor/moment.min.js"></script>
+	<script src="{{ request.script_root }}/themes/original/static/js/vendor/handlebars.min.js"></script>
+	<script type="text/javascript">
+		var script_root = "{{ request.script_root }}";
+		console.log('%c欢迎来到 NUAACTF 2017！', 'background: #000; padding: 5px 10px; line-height: 30px; border-radius: 5px; color: #fff');
+	</script>
+</head>
+<body>
+	<div class="global-bg"></div>
+	<div class="body-container">
+		<div class="navbar navbar-inverse home">
+			<div class="container">
+				<div class="navbar-header">
+					<button class="navbar-toggle" data-target=".navbar-collapse" data-toggle="collapse" type="button">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a href="{{ request.script_root }}/" class="navbar-brand">{{ ctf_name() }}</a>
+				</div>
+				<div class="navbar-collapse collapse" aria-expanded="false" style="height: 0" data-router>
+					<ul class="nav navbar-nav">
+						{% for page in pages() %}
+							<li><a href="{{ request.script_root }}/{{ page.route }}">{{ page.route|title }}</a></li>
+						{% endfor %}
+						<li><a href="{{ request.script_root }}/teams">队伍列表</a></li>
+						{% if not hide_scores() %}
+						<li><a href="{{ request.script_root }}/scoreboard">排行榜</a></li>
+						{% endif %}
+						<li><a href="{{ request.script_root }}/challenges">题目列表</a></li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+					{% if username is defined %}
+						{% if admin %}
+						<li><a href="{{ request.script_root }}/admin">管理后台</a></li>
+						{% endif %}
+						<li><a href="{{ request.script_root }}/team/{{ id }}">我的队伍</a></li>
+						<li><a href="{{ request.script_root }}/profile">个人设置</a></li>
+						<li><a href="{{ request.script_root }}/logout">注销</a></li>
+					{% else %}
+						{% if can_register() %}
+						<li><a href="{{ request.script_root }}/register">注册</a></li>
+						<li><a style="padding-left:0;padding-right:0;">|</a></li>
+						{% endif %}
+						<li><a href="{{ request.script_root }}/login">登录</a></li>
+					{% endif %}
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		{% block content %}
+		{% endblock %}
+
+		<div class="navbar navbar-bottom footer">
+			<p class="text-muted text-center"><sub>由 <a style="text-decoration:none;" href="https://ctfd.io">CTFd</a> 和 <a style="text-decoration:none;" href="http://asuri.co">Asuri Team</a> 提供技术支持</sub></p>
+		</div>
+	</div>
+	<script src="{{ request.script_root }}/themes/{{ ctf_theme() }}/static/js/vendor/jquery.min.js"></script>
+	<script src="{{ request.script_root }}/themes/{{ ctf_theme() }}/static/js/vendor/marked.min.js"></script>
+	<script src="{{ request.script_root }}/themes/{{ ctf_theme() }}/static/js/vendor/bootstrap.min.js"></script>
+	<script src="{{ request.script_root }}/themes/{{ ctf_theme() }}/static/js/style.js"></script>
+	{% block scripts %}
+	{% endblock %}
+
+	{% for script in get_registered_scripts() %}
+	{% if script.startswith('http') %}
+	<script src="{{ script }}"></script>
+	{% elif request.script_root %}
+	<script src="{{ request.script_root }}/{{ script }}"></script>
+	{% else %}
+	<script src="{{ script }}"></script>
+	{% endif %}
+	{% endfor %}
+</body>
+</html>
