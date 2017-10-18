@@ -19,7 +19,7 @@ RUN mkdir /etc/service/nginx
 COPY docker-uwsgi/nginx.sh /etc/service/nginx/run
 RUN chmod +x /etc/service/nginx/run
 
-RUN cd /app/ctfd && pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt && rm -fr /root/.cache/pip
+RUN cd /app/ctfd && pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt && rm -fr /root/.cache/pip && rm -fr /etc/nginx/sites-enabled/*
 
 COPY docker-uwsgi/nginx-ctfd.conf /etc/nginx/sites-enabled/ctfd
 

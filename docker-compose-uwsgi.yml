@@ -2,17 +2,21 @@ version: '2'
 
 services:
   ctfd-uwsgi:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile-uwsgi
     restart: always
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=mysql+pymysql://root:ctfd@db/ctfd
+      - DATABASE_URL=mysql+pymysql://root:AJSOIDFHJAOSIERUYDASE@db/ctfd
+      - REDIS_URL=redis://cache/0
     volumes:
       - .data/CTFd/logs:/app/ctfd/CTFd/logs
       - .data/CTFd/uploads:/app/ctfd/CTFd/uploads
     depends_on:
       - db
+      - cache
 
   db:
     image: mariadb:10.2
@@ -23,3 +27,7 @@ services:
       - MYSQL_PASSWORD=ctfd
     volumes:
       - .data/mysql:/var/lib/mysql
+ 
+  cache:
+    image: redis:3.2
+    restart: always
